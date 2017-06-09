@@ -5,16 +5,18 @@ namespace Dust.Models {
 	{
 		private int width;
 		private int height;
-		private Position exit;
+		private Exit exit;
 		private Character player;
 		private List<Character> enemies;
 		private List<Obstacle> obstacles;
 		private List<PositionHolder> positionHolders;
+		private Position halfSize;
+		private List<Position> corners;
 
 		public Field (
 			int width,
 			int height,
-			Position exit,
+			Exit exit,
 			Character player,
 			IEnumerable<Character> enemies,
 			IEnumerable<Obstacle> obstacles)
@@ -25,15 +27,44 @@ namespace Dust.Models {
 			this.player = player;
 			this.enemies = new List<Character> (enemies);
 			this.obstacles = new List<Obstacle> (obstacles);
+			this.halfSize = new Position (width / 2, height / 2);
 
-			positionHolders = new List<PositionHolder> (enemies as IEnumerable<PositionHolder>);
-			positionHolders.AddRange (obstacles as IEnumerable<PositionHolder>);
+			positionHolders = new List<PositionHolder> ();
 			positionHolders.Add (player);
+			positionHolders.Add (exit);
+			positionHolders.AddRange (obstacles as IEnumerable<PositionHolder>);
+			positionHolders.AddRange (enemies as IEnumerable<PositionHolder>);
+
+			corners = new List<Position> {
+				new Position (0, 0),
+				new Position (0, height - 1),
+				new Position (width - 1, height - 1),
+				new Position (width - 1, 0) };
 		}
 
-		public bool IsPositionOccupied (Position position)
+		private bool IsCorner (Position shiftedPosition)
 		{
-			return positionHolders.Exists (x => x.Position.Equals (position));
+			return corners.Contains (shiftedPosition);
+		}
+
+		private bool IsInBounds (Position shiftedPosition)
+		{
+			return 0 <= shiftedPosition.Col && shiftedPosition.Col < width
+				&& 0 <= shiftedPosition.Row && shiftedPosition.Row < height;
+		}
+
+		public bool TryGetPositionHolder (Position position, out PositionHolder positionHoder)
+		{
+			positionHoder = positionHolders.Find (x => x.Position.Equals (position));
+			Character enemy = positionHoder as Character;
+
+			return positionHoder != null && (enemy == null || enemy.IsAlive);
+		}
+
+		public bool IsPositionValid (Position position)
+		{
+			Position shifted = position.Add (halfSize);
+			return IsInBounds (shifted) && !IsCorner (shifted);
 		}
 
 		public int Width {
@@ -66,7 +97,7 @@ namespace Dust.Models {
 			}
 		}
 
-		public Position Exit {
+		public Exit Exit {
 			get {
 				return this.exit;
 			}

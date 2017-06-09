@@ -18,8 +18,15 @@ namespace Dust.Controllers
 
 		private void MovePlayerSignalListener (ICharacterMover characterMover)
 		{
-			if (!field.IsPositionOccupied (characterMover.Destination))
+			Position destination = characterMover.Destination;
+			if (!field.IsPositionValid (destination))
+				return;
+
+			PositionHolder positionHolder;
+			if (!field.TryGetPositionHolder (characterMover.Destination, out positionHolder)) {
 				characterMover.Run ();
+				return;
+			}
 		}
 
 		public void Initialize ()

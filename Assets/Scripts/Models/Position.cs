@@ -31,6 +31,11 @@ namespace Dust.Models {
 			}
 		}
 
+		public Position Add (Position position)
+		{
+			return new Position (col + position.col, row + position.row);
+		}
+
 		public override bool Equals (object obj)
 		{
 			if (obj == null)

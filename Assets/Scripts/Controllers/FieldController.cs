@@ -49,10 +49,10 @@ namespace Dust.Controllers {
 			PlaceOnGridView (obstacleView, obstacle.Position);
 		}
 
-		private void CreateExitView (Position position)
+		private void CreateExitView (Exit exit)
 		{
 			ExitView exitView = exitViewFactory.Create ();
-			PlaceOnGridView (exitView, position);
+			PlaceOnGridView (exitView, exit.Position);
 		}
 
 		public void Initialize ()

@@ -14,6 +14,7 @@ namespace Dust.Controllers {
 		private Character character;
 		private CharacterView characterView;
 		private Position destination;
+		private Direction direction;
 		private IPositionVerctor2Mapper positionVerctor2Mapper;
 
 		public DefaultCharacterMover (
@@ -24,6 +25,7 @@ namespace Dust.Controllers {
 		{
 			this.character = character;
 			this.characterView = characterViewResolver.Resolve (character);
+			this.direction = direction;
 			this.destination = character.Position.Offset (direction);
 			this.positionVerctor2Mapper = positionVerctor2Mapper;
 		}
@@ -39,6 +41,7 @@ namespace Dust.Controllers {
 			Vector2 screenPosition = positionVerctor2Mapper.Map (destination);
 			float time = characterView.PlayMove ();
 
+			characterView.Loot (direction);
 			characterView.Move (screenPosition, time);
 			characterView.Moved += CharacterViewMoved;
 		}

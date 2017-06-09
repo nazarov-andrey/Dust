@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
 using System;
+using Dust.Models;
 
 namespace Dust.Views
 {
@@ -103,6 +104,23 @@ namespace Dust.Views
 
 			moveTask = new MoveTask (rectTransform, position, time, tickableManager);
 			moveTask.Complete += MoveTaskComplete;
+		}
+
+		public void Loot (Direction direction)
+		{
+			switch (direction)
+			{
+			case Direction.Left:
+				rectTransform.localScale = new Vector2 (-1f, 1f);
+				break;
+
+			case Direction.Right:
+				rectTransform.localScale = Vector2.one;
+				break;
+
+			default:
+				break;
+			}	
 		}
 
 		public event EventHandler<EventArgs> Moved;

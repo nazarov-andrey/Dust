@@ -4,7 +4,9 @@ namespace Dust.Models {
 	{
 		public PredefinedField ()
 			: base (
-				9, 9, new Position (2, -4),
+				9, 9,
+				new Exit (
+					new Position (2, -4)),
 				new Character (
 					new Position (2, 3), 20, 5, "Hero"),
 				new Character[] {
