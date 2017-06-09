@@ -1,16 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
 
-public class ObstacleView : MonoBehaviour {
+namespace Dust.Views {
+	public class ObstacleView : OnGridView
+	{
+		public class Factory : Factory<string, ObstacleView>
+		{
+		}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		private Image image;
+		private Sprite sprite;
+
+		private ObstacleView (
+				RectTransform rectTransform,
+				Image image,
+				Sprite sprite)
+
+			: base (rectTransform)
+		{
+			image.overrideSprite = sprite;
+		}
 	}
 }

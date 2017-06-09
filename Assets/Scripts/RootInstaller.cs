@@ -13,7 +13,7 @@ namespace Dust {
 				.AsSingle ();
 
 			Container
-				.Bind<FieldController> ()
+				.BindInterfacesAndSelfTo<FieldController> ()
 				.AsSingle ()
 				.NonLazy ();
 		}

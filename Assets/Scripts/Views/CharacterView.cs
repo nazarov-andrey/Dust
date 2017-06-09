@@ -4,14 +4,22 @@ using UnityEngine;
 using Zenject;
 
 namespace Dust.Views {
-	public class CharacterView
+	public class CharacterView : OnGridView
 	{
 		public class Factory : Factory<string, CharacterView>
 		{
 		}
 
 		private ICharacterAnimation characterAnimation;
-		private RectTransform rectTransform;
+
+		private CharacterView (
+				RectTransform rectTransform,
+				ICharacterAnimation characterAnimation)
+
+			: base (rectTransform)
+		{
+			this.characterAnimation = characterAnimation;
+		}
 
 		public void Move (Vector2 position)
 		{
@@ -33,9 +41,6 @@ namespace Dust.Views {
 			characterAnimation.Die ();	
 		}
 
-		public void Place (Vector2 position)
-		{
-			rectTransform.anchoredPosition = position;
-		}
+
 	}
 }

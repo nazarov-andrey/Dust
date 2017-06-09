@@ -10,6 +10,11 @@ namespace Dust.Views.Animations {
 
 		private Animator animator;
 
+		private AnimatorCharacterAnimation (Animator animator)
+		{
+			this.animator = animator;
+		}
+
 		public void Move ()
 		{
 			animator.SetTrigger (MoveTrigger);

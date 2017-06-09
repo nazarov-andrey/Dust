@@ -1,5 +1,8 @@
 ﻿using Zenject;
 using UnityEngine.UI;
+using UnityEngine;
+using Dust.Views.Animations;
+using System.IO;
 
 namespace Dust.Views {
 	public class CharacterViewInstaller : MonoInstaller
@@ -15,13 +18,22 @@ namespace Dust.Views {
 		public override void InstallBindings ()
 		{
 			Container
-				.Bind<Image> ()
-				.FromNewComponentOnNewGameObject (gameObject)
-				.AsSingle ()
-				.NonLazy ();
+				.Bind<CharacterView> ()
+				.AsSingle ();
 
 			Container
-				.Bind<
+				.Bind<ICharacterAnimation> ()
+				.To<AnimatorCharacterAnimation> ()
+				.AsSingle ();
+
+			Container
+				.Bind<RectTransform> ()
+				.FromMethod (x => GetComponent<RectTransform> ());
+
+			Container
+				.Bind<Animator> ()
+				.FromComponentInNewPrefabResource ("Characters/" + kind)
+				.AsSingle ();
 		}
 	}
 }

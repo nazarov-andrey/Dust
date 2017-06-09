@@ -14,7 +14,7 @@ namespace Dust.Views {
 			RectTransform rectTransform = transform as RectTransform;
 
 			this.cellWidth = rectTransform.rect.width / (float)field.Width;
-			this.cellHeight = rectTransform.rect.width / (float)field.Height;
+			this.cellHeight = rectTransform.rect.height / (float)field.Height;
 		}
 
 		public Vector2 Map (Position position)
