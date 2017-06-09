@@ -12,12 +12,7 @@ namespace Dust.Views {
 		private Image image;
 		private Sprite sprite;
 
-		private ObstacleView (
-				RectTransform rectTransform,
-				Image image,
-				Sprite sprite)
-
-			: base (rectTransform)
+		private ObstacleView (Image image, Sprite sprite)
 		{
 			image.overrideSprite = sprite;
 		}

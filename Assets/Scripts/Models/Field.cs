@@ -9,6 +9,7 @@ namespace Dust.Models {
 		private Character player;
 		private List<Character> enemies;
 		private List<Obstacle> obstacles;
+		private List<PositionHolder> positionHolders;
 
 		public Field (
 			int width,
@@ -24,6 +25,15 @@ namespace Dust.Models {
 			this.player = player;
 			this.enemies = new List<Character> (enemies);
 			this.obstacles = new List<Obstacle> (obstacles);
+
+			positionHolders = new List<PositionHolder> (enemies as IEnumerable<PositionHolder>);
+			positionHolders.AddRange (obstacles as IEnumerable<PositionHolder>);
+			positionHolders.Add (player);
+		}
+
+		public bool IsPositionOccupied (Position position)
+		{
+			return positionHolders.Exists (x => x.Position.Equals (position));
 		}
 
 		public int Width {

@@ -12,35 +12,29 @@ namespace Dust.Views {
 
 		private ICharacterAnimation characterAnimation;
 
-		private CharacterView (
-				RectTransform rectTransform,
-				ICharacterAnimation characterAnimation)
-
-			: base (rectTransform)
+		private CharacterView (ICharacterAnimation characterAnimation)
 		{
 			this.characterAnimation = characterAnimation;
 		}
 
-		public void Move (Vector2 position)
+		public float PlayAttack ()
 		{
-			characterAnimation.Move ();	
+			return characterAnimation.Attack ();
 		}
 
-		public void Attack ()
+		public float PlayHurt ()
 		{
-			characterAnimation.Attack ();
+			return characterAnimation.Hurt ();
 		}
 
-		public void Hurt ()
+		public float PlayDie ()
 		{
-			characterAnimation.Hurt ();
+			return characterAnimation.Die ();	
 		}
 
-		public void Die ()
+		public float PlayMove ()
 		{
-			characterAnimation.Die ();	
+			return characterAnimation.Move ();
 		}
-
-
 	}
 }

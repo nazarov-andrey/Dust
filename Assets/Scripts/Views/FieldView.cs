@@ -20,8 +20,8 @@ namespace Dust.Views {
 		public Vector2 Map (Position position)
 		{
 			return new Vector2 (
-				position.Row * cellWidth,
-				position.Col * cellHeight);
+				position.Col * cellWidth,
+				position.Row * cellHeight);
 		}
 	}
 }

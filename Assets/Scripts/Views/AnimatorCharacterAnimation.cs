@@ -15,24 +15,36 @@ namespace Dust.Views.Animations {
 			this.animator = animator;
 		}
 
-		public void Move ()
+		private float GetCurrentStateDuration ()
 		{
-			animator.SetTrigger (MoveTrigger);
+			AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo (0);
+			return animatorStateInfo.length;
 		}
 
-		public void Attack ()
+		private float SetTriggerAndReturnDuration (string trigger)
 		{
-			animator.SetTrigger (AttackTrigger);
+			animator.SetTrigger (trigger);
+			return GetCurrentStateDuration ();
 		}
 
-		public void Hurt ()
+		public float Move ()
 		{
-			animator.SetTrigger (HurtTrigger);
+			return SetTriggerAndReturnDuration (MoveTrigger);
 		}
 
-		public void Die ()
+		public float Attack ()
 		{
-			animator.SetTrigger (DieTrigger);
+			return SetTriggerAndReturnDuration (AttackTrigger);
+		}
+
+		public float Hurt ()
+		{
+			return SetTriggerAndReturnDuration (HurtTrigger);
+		}
+
+		public float Die ()
+		{
+			return SetTriggerAndReturnDuration (DieTrigger);
 		}
 	}
 }

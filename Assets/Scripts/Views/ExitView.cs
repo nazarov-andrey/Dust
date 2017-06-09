@@ -7,9 +7,5 @@ namespace Dust.Views {
 		public class Factory : Factory<ExitView>
 		{
 		}
-
-		private ExitView (RectTransform rectTransform) : base (rectTransform)
-		{
-		}
 	}
 }
