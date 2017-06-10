@@ -12,5 +12,11 @@ namespace Dust.Models
 				return int.MinValue;
 			}
 		}
+
+		public override bool IsActive {
+			get {
+				return true;
+			}
+		}
 	}
 }

@@ -9,34 +9,38 @@ namespace Dust.Controllers
 	{
 		private FlickGesture flick;
 		private PlayerTurnSignal playerTurnSignal;
-		private WaitForEnemyTurnSignal waitForEnemyTurnSignal;
 		private WaitForPlayerTurnSignal waitForPlayerTurnSignal;
 		private Character player;
-		private MoveTurnAction.DirectionFactory defaultCharacterMoverFactory;
+		private Field field;
+		private MoveTurnAction.PositionFactory moveTurnActionFactory;
 		private float flickError;
 
 		private PlayerController (
 			FlickGesture flick,
 			PlayerTurnSignal playerTurnSignal,
-			WaitForEnemyTurnSignal waitForEnemyTurnSignal,
 			WaitForPlayerTurnSignal waitForPlayerTurnSignal,
-			Character player,
-			MoveTurnAction.DirectionFactory defaultCharacterMoverFactory,
+			Field field,
+			MoveTurnAction.PositionFactory moveTurnActionFactory,
 			float flickError)
 		{
 			this.flick = flick;
 			this.playerTurnSignal = playerTurnSignal;
-			this.waitForEnemyTurnSignal = waitForEnemyTurnSignal;
 			this.waitForPlayerTurnSignal = waitForPlayerTurnSignal;
-			this.defaultCharacterMoverFactory = defaultCharacterMoverFactory;
-			this.player = player;
+			this.moveTurnActionFactory = moveTurnActionFactory;
+			this.player = field.Player;
+			this.field = field;
 			this.flickError = flickError;
 		}
 
-		private void FireSignal (Direction direction)
+		private void FireSignalfNeeded (Direction direction)
 		{
+			Position position = player.Position.Offset (direction);	
+			if (!field.IsPositionValid (position))
+				return;
+
+			flick.Flicked -= FlickFlicked;
 			playerTurnSignal.Fire (
-				defaultCharacterMoverFactory.Create (player, direction));
+				moveTurnActionFactory.Create (player, position));
 		}
 
 		private bool IsAngleDiffAcceptable  (float angleA, float angleB)
@@ -50,7 +54,7 @@ namespace Dust.Controllers
 		{
 			bool result = IsAngleDiffAcceptable (referenceAngle, flickAngle);
 			if (result)
-				FireSignal (direction);
+				FireSignalfNeeded (direction);
 
 			return result;
 		}
@@ -78,15 +82,9 @@ namespace Dust.Controllers
 			flick.Flicked += FlickFlicked;
 		}
 
-		private void WaitForEnemyTurnSignalListener (Character character)
-		{
-			flick.Flicked -= FlickFlicked;
-		}
-
 		public void Initialize ()
 		{
 			waitForPlayerTurnSignal.Listen (WaitForPlayerTurnSignalListener);
-			waitForEnemyTurnSignal.Listen (WaitForEnemyTurnSignalListener);
 		}
 	}
 }

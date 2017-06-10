@@ -40,6 +40,9 @@ namespace Dust.Controllers {
 
 		public void Perform ()
 		{
+			attackerView.Look (attacker.Position.GetDirectionTo (attackee.Position));
+			attackeeView.Look (attackee.Position.GetDirectionTo (attacker.Position));
+
 			attackee.ApplyDamage (attacker.Damage);
 			float attackDuration = attackerView.PlayAttack ();
 			float reactionDuration = attackee.Hp > 0

@@ -73,7 +73,10 @@ namespace Dust.Models {
 		public bool IsPositionValid (Position position)
 		{
 			Position shifted = position.Add (halfSize);
-			return IsInBounds (shifted) && !IsCorner (shifted);
+			return
+				IsInBounds (shifted) &&
+				!IsCorner (shifted) &&
+				!obstacles.Exists (x => x.Position.Equals (position));
 		}
 
 		public bool IsPositionValidAndFree (Position position)

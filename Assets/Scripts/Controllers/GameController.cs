@@ -42,13 +42,9 @@ namespace Dust.Controllers
 				throw new System.ArgumentException (
 					"Expecting only " + typeof (MoveTurnAction) + " as player turn action");
 
-			Position destination = turnAction.TargetPosition;
-			if (!field.IsPositionValid (destination))
-				return;
-
 			PositionHolder positionHolder;
 			if (!field.TryGetPositionHolder (turnAction.TargetPosition, out positionHolder)
-				|| positionHolder is Exit)
+					|| positionHolder is Exit)
 			{
 				turnAction.Perform ();
 				turnAction.Complete += TurnActionComplete;
