@@ -3,7 +3,7 @@ using Dust.Models;
 using Dust.Controllers;
 
 namespace Dust {
-	public class RootInstaller : MonoInstaller
+	public class GameplayInstaller : MonoInstaller
 	{
 		public override void InstallBindings ()
 		{
@@ -40,6 +40,16 @@ namespace Dust {
 
 			Container
 				.BindInterfacesAndSelfTo<GameController> ()
+				.AsSingle ();
+
+			Container
+				.Bind<ILossCondtion> ()
+				.To<PlayerDeadLossCondition> ()
+				.AsSingle ();
+
+			Container
+				.Bind<IVictoryCondition> ()
+				.To<ExitReachedVictoryCondition> ()
 				.AsSingle ();
 
 			Container

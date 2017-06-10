@@ -13,6 +13,9 @@ namespace Dust.Controllers
 		private WaitForEnemyTurnSignal waitForEnemyTurnSignal;
 		private AttackTurnAction.Factory attackPerformerFactory;
 		private Queue<Character> turnQueue;
+		private SceneLauncher sceneLauncher;
+		private IVictoryCondition victoryCondition;
+		private ILossCondtion lossCondtion;
 
 		private GameController (
 			Field field,
@@ -20,7 +23,10 @@ namespace Dust.Controllers
 			EnemyTurnSignal enemyTurnSignal,
 			WaitForPlayerTurnSignal waitForPlayerTurnSignal,
 			WaitForEnemyTurnSignal waitForEnemyTurnSignal,
-			AttackTurnAction.Factory attackPerformerFactory)
+			AttackTurnAction.Factory attackPerformerFactory,
+			SceneLauncher sceneLauncher,
+			IVictoryCondition victoryCondition,
+			ILossCondtion lossCondtion)
 		{
 			this.field = field;
 			this.playerTurnSignal = playerTurnSignal;
@@ -28,6 +34,10 @@ namespace Dust.Controllers
 			this.waitForPlayerTurnSignal = waitForPlayerTurnSignal;
 			this.waitForEnemyTurnSignal = waitForEnemyTurnSignal;
 			this.attackPerformerFactory = attackPerformerFactory;
+			this.sceneLauncher = sceneLauncher;
+			this.victoryCondition = victoryCondition;
+			this.lossCondtion = lossCondtion;
+
 			this.turnQueue = new Queue<Character> ();
 
 			turnQueue.Enqueue (field.Player);
@@ -81,6 +91,16 @@ namespace Dust.Controllers
 
 		private void ProcessNextTurn ()
 		{
+			if (lossCondtion.IsSatisfied ()) {
+				sceneLauncher.Run (new ResultLaunchOptions (GameResult.Loss));
+				return;
+			}
+
+			if (victoryCondition.IsSatisfied ()) {
+				sceneLauncher.Run (new ResultLaunchOptions (GameResult.Victory));
+				return;
+			}
+
 			Character turnOwner;
 			do {
 				turnOwner = turnQueue.Dequeue ();
