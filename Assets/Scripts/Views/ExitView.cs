@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace Dust.Views {
-	public class ExitView : OnGridView
+	public class ExitView : PositionHolderView
 	{
 		public class Factory : Factory<ExitView>
 		{

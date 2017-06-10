@@ -21,6 +21,24 @@ namespace Dust {
 				.AsSingle ();
 
 			Container
+				.BindInstance (10f)
+				.WhenInjectedInto<PlayerController> ();
+
+			Container
+				.BindInterfacesAndSelfTo<EnemyController> ()
+				.AsSingle ();
+
+			Container
+				.Bind<IAttackPossibility> ()
+				.To<NeighboursAttackPossibility> ()
+				.AsSingle ();
+
+			Container
+				.Bind<IEnemyMovePositionPicker> ()
+				.To<SimpleEnemyMovePositionPicker> ()
+				.AsSingle ();
+
+			Container
 				.BindInterfacesAndSelfTo<GameController> ()
 				.AsSingle ();
 
@@ -30,10 +48,19 @@ namespace Dust {
 				.WhenInjectedInto<PlayerController> ();
 
 			Container
-				.BindFactory<Character, Direction, DefaultCharacterMover, DefaultCharacterMover.Factory> ();
+				.BindFactory<Character, Direction, MoveTurnAction, MoveTurnAction.DirectionFactory> ();
 
 			Container
-				.DeclareSignal<MoveCharacterSignal> ();
+				.BindFactory<Character, Position, MoveTurnAction, MoveTurnAction.PositionFactory> ();
+
+			Container
+				.BindFactory<Character, Character, AttackTurnAction, AttackTurnAction.Factory> ();
+
+			Container.DeclareSignal<PlayerTurnSignal> ();
+			Container.DeclareSignal<EnemyTurnSignal> ();
+			Container.DeclareSignal<WaitForPlayerTurnSignal> ();
+			Container.DeclareSignal<WaitForEnemyTurnSignal> ();
+			Container.DeclareSignal<RearrangeViewsSignal> ();
 		}
 	}
 }

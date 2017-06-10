@@ -1,10 +1,13 @@
 ﻿using Dust.Models;
 using Dust.Views;
+using System;
 
 namespace Dust.Controllers {
-	public interface ICharacterMover
+	public interface ITurnAction
 	{
-		void Run ();
-		Position Destination { get; }
+		void Perform ();
+		Position TargetPosition { get; }
+
+		event EventHandler<EventArgs> Complete;
 	}
 }

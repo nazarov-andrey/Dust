@@ -12,7 +12,8 @@ namespace Dust.Controllers {
 		private CharacterView.Factory characterViewFactory;
 		private ObstacleView.Factory obstacleViewFactory;
 		private ExitView.Factory exitViewFactory;
-		private Dictionary<Character, CharacterView> characterViewMap;
+		private Dictionary<PositionHolder, PositionHolderView> positionHolderViewMap;
+		private RearrangeViewsSignal rearrangeViewsSignal;
 
 		private FieldController (
 			Field field,
@@ -20,17 +21,24 @@ namespace Dust.Controllers {
 			IPositionVerctor2Mapper positionVerctor2Mapper,
 			CharacterView.Factory characterViewFactory,
 			ObstacleView.Factory obstacleViewFactory,
-			ExitView.Factory exitViewFactory)
+			ExitView.Factory exitViewFactory,
+			RearrangeViewsSignal rearrangeViewsSignal)
 		{
 			this.field = field;
 			this.positionVerctor2Mapper = positionVerctor2Mapper;
 			this.characterViewFactory = characterViewFactory;
 			this.obstacleViewFactory = obstacleViewFactory;
 			this.exitViewFactory = exitViewFactory;
-			this.characterViewMap = new Dictionary<Character, CharacterView> ();
+			this.positionHolderViewMap = new Dictionary<PositionHolder, PositionHolderView> ();
+			this.rearrangeViewsSignal = rearrangeViewsSignal;
 		}
 
-		private void PlaceOnGridView (OnGridView characterView, Position position)
+		private void TrackView (PositionHolder positionHolder, PositionHolderView positionHolderView)
+		{
+			positionHolderViewMap.Add (positionHolder, positionHolderView);
+		}
+
+		private void PlacePositionHolderView (PositionHolderView characterView, Position position)
 		{
 			Vector2 screenPosition = positionVerctor2Mapper.Map (position);
 			characterView.Place (screenPosition);
@@ -39,27 +47,40 @@ namespace Dust.Controllers {
 		private void CreateCharacterView (Character character)
 		{
 			CharacterView characterView = characterViewFactory.Create (character.Kind);
-			characterViewMap.Add (character, characterView);
-			PlaceOnGridView (characterView, character.Position);
+			PlacePositionHolderView (characterView, character.Position);
+			TrackView (character, characterView);
 		}
 
 		private void CreateObstacleView (Obstacle obstacle)
 		{
 			ObstacleView obstacleView = obstacleViewFactory.Create (obstacle.Kind);
-			PlaceOnGridView (obstacleView, obstacle.Position);
+			PlacePositionHolderView (obstacleView, obstacle.Position);
+			TrackView (obstacle, obstacleView);
 		}
 
 		private void CreateExitView (Exit exit)
 		{
 			ExitView exitView = exitViewFactory.Create ();
-			PlaceOnGridView (exitView, exit.Position);
+			PlacePositionHolderView (exitView, exit.Position);
+			TrackView (exit, exitView);
+		}
+
+		private void RearrangeViewsSignalListener ()
+		{
+			List<PositionHolder> positionHolders = new List<PositionHolder> (
+				field.PositionHolders);
+
+			positionHolders.Sort (PositionHolder.CompareViewWeights);
+
+			int i = 0;
+			foreach (var positionHolder in positionHolders) {
+				PositionHolderView positionHolderView = positionHolderViewMap [positionHolder];
+				positionHolderView.SetSiblingIndex (i++);
+			}
 		}
 
 		public void Initialize ()
 		{
-			CreateCharacterView (field.Player);
-			CreateExitView (field.Exit);
-
 			foreach (var enemy in field.Enemies) {
 				CreateCharacterView (enemy);
 			}
@@ -67,15 +88,20 @@ namespace Dust.Controllers {
 			foreach (var obstacle in field.Obstacles) {
 				CreateObstacleView (obstacle);
 			}
+
+			CreateExitView (field.Exit);
+			CreateCharacterView (field.Player);
+
+			rearrangeViewsSignal.Listen (RearrangeViewsSignalListener);
 		}
 
 		public CharacterView Resolve (Character character)
 		{
-			CharacterView characterView;
-			if (!characterViewMap.TryGetValue (character, out characterView))
+			PositionHolderView characterView;
+			if (!positionHolderViewMap.TryGetValue (character, out characterView))
 				throw new System.ArgumentException ("Cannot find view for character " + character);
 
-			return characterView;
+			return characterView as CharacterView;
 		}
 	}
 }

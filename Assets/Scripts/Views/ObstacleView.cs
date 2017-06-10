@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using Zenject;
 
 namespace Dust.Views {
-	public class ObstacleView : OnGridView
+	public class ObstacleView : PositionHolderView
 	{
 		public class Factory : Factory<string, ObstacleView>
 		{

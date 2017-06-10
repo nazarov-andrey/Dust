@@ -5,7 +5,7 @@ using Dust.Models;
 
 namespace Dust.Views
 {
-	public abstract class OnGridView
+	public abstract class PositionHolderView
 	{
 		class MoveTask : ITickable
 		{
@@ -106,7 +106,7 @@ namespace Dust.Views
 			moveTask.Complete += MoveTaskComplete;
 		}
 
-		public void Loot (Direction direction)
+		public void Look (Direction direction)
 		{
 			switch (direction)
 			{
@@ -121,6 +121,11 @@ namespace Dust.Views
 			default:
 				break;
 			}	
+		}
+
+		public void SetSiblingIndex (int index)
+		{
+			rectTransform.SetSiblingIndex (index);
 		}
 
 		public event EventHandler<EventArgs> Moved;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Dust.Models {
 	public class Field
@@ -53,18 +54,43 @@ namespace Dust.Models {
 				&& 0 <= shiftedPosition.Row && shiftedPosition.Row < height;
 		}
 
+		private bool DoesHolderHoldsPosition (PositionHolder positionHolder, Position position)
+		{
+			return positionHolder.IsActive && positionHolder.Position.Equals (position);
+		}
+
+		public bool IsPositionOccupied (Position position)
+		{
+			return positionHolders.Exists (x => DoesHolderHoldsPosition (x, position));
+		}
+
 		public bool TryGetPositionHolder (Position position, out PositionHolder positionHoder)
 		{
-			positionHoder = positionHolders.Find (x => x.Position.Equals (position));
-			Character enemy = positionHoder as Character;
-
-			return positionHoder != null && (enemy == null || enemy.IsAlive);
+			positionHoder = positionHolders.Find (x => DoesHolderHoldsPosition (x, position));
+			return positionHoder != null;
 		}
 
 		public bool IsPositionValid (Position position)
 		{
 			Position shifted = position.Add (halfSize);
 			return IsInBounds (shifted) && !IsCorner (shifted);
+		}
+
+		public bool IsPositionValidAndFree (Position position)
+		{
+			return IsPositionValid (position) && !IsPositionOccupied (position);
+		}
+
+		public List<Position> GetFreeNeighbourPositions (Position position)
+		{
+			List<Position> positions = new List<Position> {
+					position.Offset (Direction.Down),
+					position.Offset (Direction.Up),
+					position.Offset (Direction.Left),
+					position.Offset (Direction.Right) }
+				.FindAll (IsPositionValidAndFree);
+
+			return positions;
 		}
 
 		public int Width {
@@ -100,6 +126,12 @@ namespace Dust.Models {
 		public Exit Exit {
 			get {
 				return this.exit;
+			}
+		}
+
+		public ReadOnlyCollection<PositionHolder> PositionHolders {
+			get {
+				return this.positionHolders.AsReadOnly ();
 			}
 		}
 	}

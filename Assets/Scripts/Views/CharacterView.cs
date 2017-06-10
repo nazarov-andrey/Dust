@@ -4,7 +4,7 @@ using UnityEngine;
 using Zenject;
 
 namespace Dust.Views {
-	public class CharacterView : OnGridView
+	public class CharacterView : PositionHolderView
 	{
 		public class Factory : Factory<string, CharacterView>
 		{
