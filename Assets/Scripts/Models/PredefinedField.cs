@@ -8,10 +8,14 @@ namespace Dust.Models {
 				new Exit (
 					new Position (2, -4)),
 				new Character (
-					new Position (2, 3), 20, 5, "Hero"),
+					new Position (2, 3), 30, 2, "Hero"),
 				new Character[] {
 					new Character (
 						new Position (0, 0), 10, 3, "Foe"),
+					new Character (
+						new Position (-2, 2), 5, 3, "Foe"),
+					new Character (
+						new Position (-2, -4), 15, 3, "Foe"),
 					new Character (
 						new Position (-1, -1), 5, 10, "Foe") },
 				new Obstacle[] {

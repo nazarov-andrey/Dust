@@ -65,7 +65,7 @@ namespace Dust.Controllers {
 			TrackView (exit, exitView);
 		}
 
-		private void RearrangeViewsSignalListener ()
+		private void RearrangeViews ()
 		{
 			List<PositionHolder> positionHolders = new List<PositionHolder> (
 				field.PositionHolders);
@@ -76,7 +76,12 @@ namespace Dust.Controllers {
 			foreach (var positionHolder in positionHolders) {
 				PositionHolderView positionHolderView = positionHolderViewMap [positionHolder];
 				positionHolderView.SetSiblingIndex (i++);
-			}
+			}			
+		}
+
+		private void RearrangeViewsSignalListener ()
+		{
+			RearrangeViews ();
 		}
 
 		public void Initialize ()
@@ -92,6 +97,7 @@ namespace Dust.Controllers {
 			CreateExitView (field.Exit);
 			CreateCharacterView (field.Player);
 
+			RearrangeViews ();
 			rearrangeViewsSignal.Listen (RearrangeViewsSignalListener);
 		}
 
