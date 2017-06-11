@@ -112,7 +112,7 @@ SubShader {
 
 	Pass {
 		CGPROGRAM
-		#pragma target 3.0
+		#pragma target 2.5
 		#pragma vertex VertShader
 		#pragma fragment PixShader
 		#pragma shader_feature __ BEVEL_ON

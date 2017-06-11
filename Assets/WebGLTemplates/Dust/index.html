@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | %UNITY_WEB_NAME%</title>
+    <style>
+      .progress {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        left: 350px;
+        top: 250px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+    <script src="%UNITY_WEBGL_LOADER_URL%"></script>
+    <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
+
+    function UnityProgress(gameInstance, progress) {
+      if (!gameInstance.progress) {
+        gameInstance.progress = document.createElement("img");  
+        gameInstance.progress.className = "progress";
+        gameInstance.progress.src = "TemplateData/preloader.png";
+        gameInstance.progressStartTime = new Date ().getTime ();
+        gameInstance.prealoaderSpeed = 10;
+        gameInstance.container.appendChild(gameInstance.progress);
+      }
+
+      var timeDiff = (new Date ().getTime () - gameInstance.progressStartTime) / 1000;
+      
+      var rotation = 360 * gameInstance.prealoaderSpeed * timeDiff;
+      var transform = "rotate(" + rotation + "deg)";
+      console.log (transform);
+
+      gameInstance.progress.style.transform = transform;
+      gameInstance.progress.style.msTransform = transform;
+      gameInstance.progress.style.WebkitTransform = transform;
+
+      if (progress == 1)
+          gameInstance.progress.className = "hidden";
+    }
+    </script>
+  </head>
+  
+  <body>
+    <div id="gameContainer" style="width: %UNITY_WIDTH%px; height: %UNITY_HEIGHT%px; margin: auto"></div>
+  </body>
+  
+</html>
