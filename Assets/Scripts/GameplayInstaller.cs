@@ -1,6 +1,7 @@
 ﻿using Zenject;
 using Dust.Models;
 using Dust.Controllers;
+using UnityEngine;
 
 namespace Dust {
 	public class GameplayInstaller : MonoInstaller
@@ -16,13 +17,19 @@ namespace Dust {
 				.BindInterfacesAndSelfTo<FieldController> ()
 				.AsSingle ();
 
-			Container
-				.BindInterfacesAndSelfTo<PlayerController> ()
-				.AsSingle ();
+			if (Application.isMobilePlatform) {
+				Container
+					.BindInterfacesAndSelfTo<FlickPlayerController> ()
+					.AsSingle ();
 
-			Container
-				.BindInstance (10f)
-				.WhenInjectedInto<PlayerController> ();
+				Container
+					.BindInstance (10f)
+					.WhenInjectedInto<FlickPlayerController> ();
+			} else {
+				Container
+					.BindInterfacesAndSelfTo<TapPlayerController> ()
+					.AsSingle ();
+			}
 
 			Container
 				.BindInterfacesAndSelfTo<EnemyController> ()
@@ -55,7 +62,7 @@ namespace Dust {
 			Container
 				.Bind<Character> ()
 				.FromMethod (x => x.Container.Resolve<Field> ().Player)
-				.WhenInjectedInto<PlayerController> ();
+				.WhenInjectedInto<FlickPlayerController> ();
 
 			Container
 				.BindFactory<Character, Direction, MoveTurnAction, MoveTurnAction.DirectionFactory> ();

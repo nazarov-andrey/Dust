@@ -15,11 +15,11 @@ namespace Dust {
 				.AsSingle ();
 
 			Container
-				.BindInstance ("Results/Victory")
+				.BindInstance ("Victory")
 				.WithId (ResultLogoController.VictorySprite);
 
 			Container
-				.BindInstance ("Results/Loss")
+				.BindInstance ("Loss")
 				.WithId (ResultLogoController.LossSprite);
 		}
 	}

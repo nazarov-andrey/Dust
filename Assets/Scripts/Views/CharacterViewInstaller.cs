@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using Dust.Views.Animations;
 using System.IO;
+using AssetBundles;
 
 namespace Dust.Views {
 	public class CharacterViewInstaller : MonoInstaller
@@ -32,7 +33,8 @@ namespace Dust.Views {
 
 			Container
 				.Bind<Animator> ()
-				.FromComponentInNewPrefabResource ("Characters/" + kind)
+				.FromComponentInNewPrefab (
+					AssetBundleManager.LoadAsset<GameObject> (AssetBundleNames.GameplayBundle, kind))
 				.AsSingle ();
 		}
 	}

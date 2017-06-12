@@ -83,6 +83,11 @@ namespace Dust.Models {
 			}
 		}
 
+		public override string ToString ()
+		{
+			return string.Format ("[Position: row={0}, col={1}]", row, col);
+		}
+
 		public int Row {
 			get {
 				return this.row;

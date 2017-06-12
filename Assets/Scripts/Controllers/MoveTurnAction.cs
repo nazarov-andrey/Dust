@@ -19,7 +19,7 @@ namespace Dust.Controllers {
 		private CharacterView characterView;
 		private Position targetPosition;
 		private Direction direction;
-		private IPositionVerctor2Mapper positionVerctor2Mapper;
+		private IPositionScreenPointMapper positionVerctor2Mapper;
 		private RearrangeViewsSignal rearrangeViewsSignal;
 
 		private MoveTurnAction (
@@ -27,7 +27,7 @@ namespace Dust.Controllers {
 			[InjectOptional] Direction direction,
 			[InjectOptional] Position targetPosition,
 			ICharacterViewResolver characterViewResolver,
-			IPositionVerctor2Mapper positionVerctor2Mapper,
+			IPositionScreenPointMapper positionVerctor2Mapper,
 			RearrangeViewsSignal rearrangeViewsSignal)
 		{
 			this.character = character;
@@ -54,7 +54,7 @@ namespace Dust.Controllers {
 
 		public void Perform ()
 		{
-			Vector2 screenPosition = positionVerctor2Mapper.Map (targetPosition);
+			Vector2 screenPosition = positionVerctor2Mapper.PositionToScreenPoint (targetPosition);
 			float time = characterView.PlayMove ();
 
 			characterView.Look (direction);

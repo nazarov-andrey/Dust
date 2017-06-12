@@ -23,11 +23,11 @@ namespace Zenject
         {
             Assert.That(!ZenUtilInternal.IsNull(prefab), "Received null prefab during bind command");
 
-#if UNITY_EDITOR
-            // This won't execute in dll builds sadly
-            Assert.That(PrefabUtility.GetPrefabType(prefab) == PrefabType.Prefab,
-                "Expected prefab but found game object with name '{0}' during bind command", prefab.name);
-#endif
+//#if UNITY_EDITOR
+//            // This won't execute in dll builds sadly
+//            Assert.That(PrefabUtility.GetPrefabType(prefab) == PrefabType.Prefab,
+//                "Expected prefab but found game object with name '{0}' during bind command", prefab.name);
+//#endif
         }
 
         public static void AssertIsValidGameObject(GameObject gameObject)

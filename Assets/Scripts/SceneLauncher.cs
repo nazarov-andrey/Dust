@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using AssetBundles;
 
 namespace Dust {
 	public class SceneLauncher : ITickable
@@ -14,12 +15,12 @@ namespace Dust {
 			string SceneToUnload { get; }
 		}
 
-		private ZenjectSceneLoader zenjectSceneLoader;
+		private ZenjectAssetBundleSceneLoader zenjectSceneLoader;
 		private TickableManager tickableManager;
-		private AsyncOperation asyncOperation;
+		private AssetBundleLoadOperation loadOperation;
 
 		private SceneLauncher (
-			ZenjectSceneLoader zenjectSceneLoader,
+			ZenjectAssetBundleSceneLoader zenjectSceneLoader,
 			TickableManager tickableManager)
 		{
 			this.zenjectSceneLoader = zenjectSceneLoader;
@@ -28,10 +29,8 @@ namespace Dust {
 
 		public void Run (IOptions options)
 		{
-			asyncOperation = zenjectSceneLoader.LoadSceneAsync (
-				options.Scene,
-				LoadSceneMode.Additive,
-				options.ExtraBindings);
+			loadOperation = zenjectSceneLoader.LoadSceneAsync (
+				options.Scene, LoadSceneMode.Additive, options.ExtraBindings);
 
 			tickableManager.Add (this);
 
@@ -41,7 +40,7 @@ namespace Dust {
 
 		public void Tick ()
 		{
-			if (!asyncOperation.isDone)
+			if (!loadOperation.IsDone ())
 				return;
 
 			tickableManager.Remove (this);

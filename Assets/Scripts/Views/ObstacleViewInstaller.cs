@@ -1,6 +1,7 @@
 ﻿using Zenject;
 using UnityEngine.UI;
 using UnityEngine;
+using AssetBundles;
 
 namespace Dust.Views {
 	public class ObstacleViewInstaller : MonoInstaller
@@ -11,6 +12,11 @@ namespace Dust.Views {
 		private void Inject (string kind)
 		{
 			this.kind = kind;
+		}
+
+		private Sprite LoadSprite (string kind)
+		{
+			return AssetBundleManager.LoadAsset<Sprite> (AssetBundleNames.GameplayBundle, kind);
 		}
 
 		public override void InstallBindings ()
@@ -25,7 +31,7 @@ namespace Dust.Views {
 
 			Container
 				.Bind<Sprite> ()
-				.FromResource ("Obstacles/" + kind)
+				.FromMethod (x => LoadSprite (kind))
 				.AsSingle ();
 
 			Container

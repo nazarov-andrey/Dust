@@ -8,7 +8,7 @@ namespace Dust.Controllers {
 	public class FieldController : ICharacterViewResolver, IInitializable
 	{
 		private Field field;
-		private IPositionVerctor2Mapper positionVerctor2Mapper;
+		private IPositionScreenPointMapper positionVerctor2Mapper;
 		private CharacterView.Factory characterViewFactory;
 		private ObstacleView.Factory obstacleViewFactory;
 		private ExitView.Factory exitViewFactory;
@@ -18,7 +18,7 @@ namespace Dust.Controllers {
 		private FieldController (
 			Field field,
 			FieldView fieldView,
-			IPositionVerctor2Mapper positionVerctor2Mapper,
+			IPositionScreenPointMapper positionVerctor2Mapper,
 			CharacterView.Factory characterViewFactory,
 			ObstacleView.Factory obstacleViewFactory,
 			ExitView.Factory exitViewFactory,
@@ -40,7 +40,7 @@ namespace Dust.Controllers {
 
 		private void PlacePositionHolderView (PositionHolderView characterView, Position position)
 		{
-			Vector2 screenPosition = positionVerctor2Mapper.Map (position);
+			Vector2 screenPosition = positionVerctor2Mapper.PositionToScreenPoint (position);
 			characterView.Place (screenPosition);
 		}
 

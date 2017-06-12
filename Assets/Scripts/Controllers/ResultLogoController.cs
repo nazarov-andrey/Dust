@@ -1,6 +1,7 @@
 ﻿using Zenject;
 using UnityEngine;
 using UnityEngine.UI;
+using AssetBundles;
 
 namespace Dust.Controllers {
 	public class ResultLogoController : IInitializable
@@ -39,7 +40,9 @@ namespace Dust.Controllers {
 				break;
 			}
 
-			logo.sprite = Resources.Load<Sprite> (spriteName);
+			Sprite sprite = AssetBundleManager.LoadAsset<Sprite> (
+				AssetBundleNames.GameplayBundle, spriteName);
+			logo.sprite = sprite;
 		}
 	}
 }
