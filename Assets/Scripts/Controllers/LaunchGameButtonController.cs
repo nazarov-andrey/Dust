@@ -16,7 +16,7 @@ namespace Dust.Controllers {
 
 		public void OnClick ()
 		{
-			sceneLauncher.Run (new GameLaunchOptions (sceneToUnload));
+			sceneLauncher.Launch (SceneNames.Gameplay);
 		}
 	}
 }

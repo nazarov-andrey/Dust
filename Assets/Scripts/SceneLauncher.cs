@@ -3,46 +3,109 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using AssetBundles;
+using Dust.Controllers;
 
 namespace Dust {
 	public class SceneLauncher : ITickable
 	{
-		public interface IOptions
+		interface ILoadOperation
 		{
-			void ExtraBindings (DiContainer container);
-
-			string Scene { get; }
-			string SceneToUnload { get; }
+			bool IsDone { get; }
 		}
 
-		private ZenjectAssetBundleSceneLoader zenjectSceneLoader;
+		class AsyncOperationLoadOperation : ILoadOperation
+		{
+			private AsyncOperation asyncOperation;
+
+			public AsyncOperationLoadOperation (AsyncOperation asyncOperation)
+			{
+				this.asyncOperation = asyncOperation;
+			}
+
+			public bool IsDone {
+				get {
+					return asyncOperation.isDone;
+				}
+			}
+		}
+
+		class AssetBundleLoadOperation : ILoadOperation
+		{
+			private AssetBundles.AssetBundleLoadOperation assetBundleLoadOperation;
+
+			public AssetBundleLoadOperation (AssetBundles.AssetBundleLoadOperation assetBundleLoadOperation)
+			{
+				this.assetBundleLoadOperation = assetBundleLoadOperation;
+			}
+
+			public bool IsDone {
+				get {
+					return assetBundleLoadOperation.IsDone ();
+				}
+			}
+		}
+			
+
+
+		private ZenjectAssetBundleSceneLoader zenjectAssetBundleSceneLoader;
+		private ZenjectSceneLoader zenjectSceneLoader;
 		private TickableManager tickableManager;
-		private AssetBundleLoadOperation loadOperation;
+		private ILoadOperation loadOperation;
+		private PreloaderController preloaderController;
 
 		private SceneLauncher (
-			ZenjectAssetBundleSceneLoader zenjectSceneLoader,
-			TickableManager tickableManager)
+			ZenjectAssetBundleSceneLoader zenjectAssetBundleSceneLoader,
+			ZenjectSceneLoader zenjectSceneLoader,
+			TickableManager tickableManager,
+			PreloaderController preloaderController)
 		{
+			this.zenjectAssetBundleSceneLoader = zenjectAssetBundleSceneLoader;
 			this.zenjectSceneLoader = zenjectSceneLoader;
 			this.tickableManager = tickableManager;
+			this.preloaderController = preloaderController;
 		}
 
-		public void Run (IOptions options)
+		private bool IsBuildInScene (string sceneName)
 		{
-			loadOperation = zenjectSceneLoader.LoadSceneAsync (
-				options.Scene, LoadSceneMode.Additive, options.ExtraBindings);
+			for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++) {
+				string[] chunks = SceneUtility
+					.GetScenePathByBuildIndex (i)
+					.Split ('/');
 
-			tickableManager.Add (this);
+				if (chunks [chunks.Length - 1] == sceneName + ".unity")
+					return true;
+ 			}
 
-			if (!string.IsNullOrEmpty (options.SceneToUnload))
-				SceneManager.UnloadSceneAsync (options.SceneToUnload);
+			return false;
+		}
+
+		public void Launch (
+			string scene,
+			bool unloadCurrent = true,
+			Action<DiContainer> extraBindings = null)
+		{
+			if (unloadCurrent)
+				SceneManager.UnloadSceneAsync (SceneManager.GetActiveScene ());
+
+			
+			if (IsBuildInScene (scene))
+				loadOperation =
+					new AsyncOperationLoadOperation (
+						zenjectSceneLoader.LoadSceneAsync (scene, LoadSceneMode.Additive, extraBindings));
+			else
+				loadOperation =
+					new AssetBundleLoadOperation (
+						zenjectAssetBundleSceneLoader.LoadSceneAsync (scene, LoadSceneMode.Additive, extraBindings));				
+
+			preloaderController.Display ();
 		}
 
 		public void Tick ()
 		{
-			if (!loadOperation.IsDone ())
+			if (!loadOperation.IsDone)
 				return;
 
+			preloaderController.Hide ();
 			tickableManager.Remove (this);
 		}
 	}

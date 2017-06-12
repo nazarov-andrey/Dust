@@ -89,15 +89,23 @@ namespace Dust.Controllers
 			turnAction.Perform ();
 		}
 
+		private void DisplayResult (GameResult gameResult)
+		{
+			sceneLauncher.Launch (
+				SceneNames.Result,
+				true,
+				x => x.BindInstance (gameResult));
+		}
+
 		private void ProcessNextTurn ()
 		{
 			if (lossCondtion.IsSatisfied ()) {
-				sceneLauncher.Run (new ResultLaunchOptions (GameResult.Loss));
+				DisplayResult (GameResult.Loss);
 				return;
 			}
 
 			if (victoryCondition.IsSatisfied ()) {
-				sceneLauncher.Run (new ResultLaunchOptions (GameResult.Victory));
+				DisplayResult (GameResult.Victory);
 				return;
 			}
 

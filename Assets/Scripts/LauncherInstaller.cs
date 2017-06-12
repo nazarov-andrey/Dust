@@ -7,6 +7,10 @@ namespace Dust {
 		public override void InstallBindings ()
 		{
 			Container
+				.BindInterfacesAndSelfTo<EntryPoint> ()
+				.AsSingle ();
+
+			Container
 				.Bind<SceneLauncher> ()
 				.AsSingle ();
 
