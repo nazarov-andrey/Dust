@@ -52,6 +52,7 @@ namespace Dust {
 		private TickableManager tickableManager;
 		private ILoadOperation loadOperation;
 		private PreloaderController preloaderController;
+		private string currentScene;
 
 		private SceneLauncher (
 			ZenjectAssetBundleSceneLoader zenjectAssetBundleSceneLoader,
@@ -84,10 +85,10 @@ namespace Dust {
 			bool unloadCurrent = true,
 			Action<DiContainer> extraBindings = null)
 		{
-			if (unloadCurrent)
-				SceneManager.UnloadSceneAsync (SceneManager.GetActiveScene ());
+			if (unloadCurrent && !string.IsNullOrEmpty (currentScene))
+				SceneManager.UnloadSceneAsync (currentScene);
 
-			
+			currentScene = scene;
 			if (IsBuildInScene (scene))
 				loadOperation =
 					new AsyncOperationLoadOperation (
@@ -98,6 +99,7 @@ namespace Dust {
 						zenjectAssetBundleSceneLoader.LoadSceneAsync (scene, LoadSceneMode.Additive, extraBindings));				
 
 			preloaderController.Display ();
+			tickableManager.Add (this);
 		}
 
 		public void Tick ()
