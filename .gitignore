@@ -34,3 +34,6 @@ sysinfo.txt
 Builds
 *.unitypackage
 AssetBundles
+
+# macOS
+.DS_Store
