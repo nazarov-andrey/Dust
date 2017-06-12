@@ -23,7 +23,7 @@ namespace Dust {
 					.AsSingle ();
 
 				Container
-					.BindInstance (10f)
+					.BindInstance (30f)
 					.WhenInjectedInto<FlickPlayerController> ();
 			} else {
 				Container

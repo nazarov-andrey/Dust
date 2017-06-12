@@ -121,7 +121,11 @@ namespace AssetBundles
 			if (Application.isWebPlayer)
 				return System.IO.Path.GetDirectoryName(Application.absoluteURL).Replace("\\", "/")+ "/StreamingAssets";
 			else if (Application.isMobilePlatform || Application.isConsolePlatform)
+			#if UNITY_IOS
+				return "file://" + Application.streamingAssetsPath;
+			#else
 				return Application.streamingAssetsPath;
+			#endif
 			else // For standalone player.
 				return Application.streamingAssetsPath;
 		}
