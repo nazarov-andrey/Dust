@@ -22,9 +22,9 @@ namespace Dust {
 					.BindInterfacesAndSelfTo<FlickPlayerController> ()
 					.AsSingle ();
 
-				Container
-					.BindInstance (30f)
-					.WhenInjectedInto<FlickPlayerController> ();
+//				Container
+//					.BindInstance (30f)
+//					.WhenInjectedInto<FlickPlayerController> ();
 			} else {
 				Container
 					.BindInterfacesAndSelfTo<TapPlayerController> ()
